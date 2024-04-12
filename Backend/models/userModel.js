@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -19,11 +20,11 @@ const userSchema = new mongoose.Schema({
     avatar: {
       public_id: {
         type: String,
-        required: true
+       
       },
       url: {
         type: String,
-        required: true
+      
       },
     },
     education: {
@@ -39,7 +40,7 @@ const userSchema = new mongoose.Schema({
       type: String,
       required: true,
       minLength: [8, "Password must contain at least 8 character!"],
-      maxLength: [32, "Password cannot exceed 32 character!"],
+     
       select: false,
     },
     createdOn: {
