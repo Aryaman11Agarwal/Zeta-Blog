@@ -2,6 +2,7 @@ const catchAysncError =require("../middlewares/catchAsyncError.js");
 const {ErrorHandler} =require("../middlewares/error.js")
 const bcrypt = require('bcryptjs');
 const userModel = require('../models/userModel.js');
+const jwt = require('jsonwebtoken');
 
 const register=catchAysncError(async (req,res,next)=>{
     const {name,email,phone,password,role,education}=req.body;
@@ -45,12 +46,45 @@ const login=catchAysncError(async (req,res,next)=>{
     if(user.role!==role){
         return next(new ErrorHandler("User with this role not found",400));
     }
+    
 
-    res.status(200).json({
-        success:true,
-        message:"User logged In"
-    })
+    jwt.sign({id:user._id},process.env.JWT_SECRET_KEY,(err,token)=>{
+        
+        if(!err){
+           
+          const options={
+            maxAge :process.env.COOKIE_EXPIRE*24*60*60*1000,
+            httpOnly:true
+          }
+        
+          res.status(200).cookie("token",token,options).send({
+            success:true,
+            user,
+            message:"user logged in successfully",
+            token:token
+          })
+        }
+    
+        else{
+            console.log("in error");
+           return next(err);
+        }
+    
+      })
 
 })
 
-module.exports={register,login};
+const logout = catchAysncError((req, res, next) => {
+    res
+      .status(200)
+      .cookie("token", "", {
+        expires: new Date(Date.now()),
+        httpOnly: true,
+      })
+      .json({
+        success: true,
+        message: "User logged out!",
+      });
+  });
+
+module.exports={register,login,logout};
