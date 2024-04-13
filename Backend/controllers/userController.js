@@ -19,9 +19,30 @@ const register=catchAysncError(async (req,res,next)=>{
     const hpass=await bcrypt.hash(password,salt);
     const newUser=await userModel.create({name,email,phone,password:hpass,role,education});
 
-    res.status(200).json({
-        success:true,
-        message:"User created"
+   
+
+    jwt.sign({id:newUser._id},process.env.JWT_SECRET_KEY,(err,token)=>{
+        
+      if(!err){
+         
+        const options={
+          maxAge :process.env.COOKIE_EXPIRE*24*60*60*1000,
+          httpOnly:true
+        }
+      
+        res.status(200).cookie("token",token,options).send({
+          success:true,
+          newUser,
+          message:"user logged in successfully",
+          token:token
+        })
+      }
+  
+      else{
+          console.log("in error");
+         return next(err);
+      }
+  
     })
 
      
@@ -87,4 +108,20 @@ const logout = catchAysncError((req, res, next) => {
       });
   });
 
-module.exports={register,login,logout};
+const getMyProfile=catchAysncError((req,res,next)=>{
+  const user=req.user;
+  res.status(200).json({
+    success:true,
+    user
+  })
+})
+
+const getAllAuthors=catchAysncError(async(req,res,next)=>{
+  const authors=await userModel.find({role:"Author"});
+  res.status(200).json({
+    success:true,
+    authors
+  })
+})
+
+module.exports={register,login,logout,getMyProfile,getAllAuthors};
