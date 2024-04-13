@@ -119,4 +119,28 @@ const blogPost = catchAsyncError(async (req, res, next) => {
   });
 });
 
-module.exports={blogPost};
+const deletePost=catchAsyncError(async(req,res,next)=>{
+  const {id}=req.params;
+
+  const blog=blogModel.findById(id);
+  if(!blog){
+    return next(new ErrorHandler("Blog not found",400));
+  }
+  await blog.deleteOne();
+
+  res.status(200).json({
+    success:true,
+    message:"Blog deleted successfully"
+  })
+})
+
+
+const getAllBlogs = catchAsyncError(async (req, res, next) => {
+  const allBlogs = await blogModel.find({ published: true });
+  res.status(200).json({
+    success: true,
+    allBlogs,
+  });
+});
+
+module.exports={blogPost,deletePost,getAllBlogs};
