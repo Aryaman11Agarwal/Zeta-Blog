@@ -3,7 +3,7 @@ const { ErrorHandler } = require("../middlewares/error");
 const blogModel = require("../models/blogModel");
 const cloudinary = require("cloudinary");
 
-const blogPost = catchAsyncError(async(req, res, next) => {
+const blogPost = catchAsyncError(async (req, res, next) => {
   if (!req.files || Object.keys(req.files).length === 0) {
     return next(new ErrorHandler("Blog main image is mandatory", 400));
   }
@@ -13,7 +13,7 @@ const blogPost = catchAsyncError(async(req, res, next) => {
   }
   const allowedFormats = ["image/png", "image/jpeg", "image/webp"];
   if (
-    (!allowedFormats.includes(mainImage.mimetype))||
+    !allowedFormats.includes(mainImage.mimetype) ||
     (paraOneImage && !allowedFormats.includes(paraOneImage.mimetype)) ||
     (paraTwoImage && !allowedFormats.includes(paraTwoImage.mimetype)) ||
     (paraThreeImage && !allowedFormats.includes(paraThreeImage.mimetype))
@@ -40,8 +40,8 @@ const blogPost = catchAsyncError(async(req, res, next) => {
   const authorName = req.user.name;
   const authorAvatar = req.user.avatar.url;
 
-  if(!title||!intro||!category){
-    return next("Title,category and intro are required fields",400);
+  if (!title || !intro || !category) {
+    return next("Title,category and intro are required fields", 400);
   }
 
   const uploadPromises = [
@@ -59,4 +59,64 @@ const blogPost = catchAsyncError(async(req, res, next) => {
 
   const [mainImageRes, paraOneImageRes, paraTwoImageRes, paraThreeImageRes] =
     await Promise.all(uploadPromises);
+
+  if (
+    !mainImageRes ||
+    mainImageRes.error ||
+    (paraOneImage && (!paraOneImageRes || paraOneImageRes.error)) ||
+    (paraTwoImage && (!paraTwoImageRes || paraTwoImageRes.error)) ||
+    (paraThreeImage && (!paraThreeImageRes || paraThreeImageRes.error))
+  ) {
+    return next(
+      new ErrorHandler("Error occured while uploading one or more images!", 500)
+    );
+  }
+
+  const blogData = {
+    title,
+    intro,
+    paraOneDescription,
+    paraOneTitle,
+    paraTwoDescription,
+    paraTwoTitle,
+    paraThreeDescription,
+    paraThreeTitle,
+    category,
+    createdBy,
+    authorAvatar,
+    authorName,
+    published,
+    mainImage: {
+      public_id: mainImageRes.public_id,
+      url: mainImageRes.secure_url,
+    },
+  };
+  if (paraOneImageRes) {
+    blogData.paraOneImage = {
+      public_id: paraOneImageRes.public_id,
+      url: paraOneImageRes.secure_url,
+    };
+  }
+  if (paraTwoImageRes) {
+    blogData.paraTwoImage = {
+      public_id: paraTwoImageRes.public_id,
+      url: paraTwoImageRes.secure_url,
+    };
+  }
+  if (paraThreeImageRes) {
+    blogData.paraThreeImage = {
+      public_id: paraThreeImageRes.public_id,
+      url: paraThreeImageRes.secure_url,
+    };
+  }
+
+  const blog = await blogModel.create(blogData);
+
+  res.status(200).json({
+    success: true,
+    message: "Blog Uploaded!",
+    blog,
+  });
 });
+
+module.exports={blogPost};
