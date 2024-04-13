@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const dbConnection = require('./database/dbConnection.js');
 const {errorMiddleware} = require('./middlewares/error.js');
 const userRouter = require('./Routes/userRouter.js');
+const fileUpload = require('express-fileupload');
 
 dotenv.config({path:'./config/config.env'});
 
@@ -21,6 +22,11 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+
+app.use(fileUpload({
+    useTempFiles:true,
+    tempFileDir:"/tmp/"
+}))
 
 app.use("/api/v1",userRouter);
 
