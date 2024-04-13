@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const dbConnection = require('./database/dbConnection.js');
 const {errorMiddleware} = require('./middlewares/error.js');
 const userRouter = require('./Routes/userRouter.js');
+const blogRouter = require('./Routes/blogRouter.js');
 const fileUpload = require('express-fileupload');
 
 dotenv.config({path:'./config/config.env'});
@@ -29,6 +30,7 @@ app.use(fileUpload({
 }))
 
 app.use("/api/v1/user",userRouter);
+app.use("/api/v1/blog",blogRouter);
 
 dbConnection();
 
