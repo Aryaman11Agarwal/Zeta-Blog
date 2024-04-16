@@ -7,6 +7,7 @@ import { MdDarkMode } from "react-icons/md";
 import { CiLight } from "react-icons/ci";
 import axios from "axios";
 import {toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Navbar = () => {
   const [show, setShow] = useState(false);
