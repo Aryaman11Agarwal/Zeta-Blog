@@ -1,51 +1,76 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./components/pages/Home";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Home from "../src/components/pages/Home";
+import About from "../src/components/pages/About";
+import Blogs from "../src/components/pages/Blogs";
+import SingleBlog from "../src/components/pages/SingleBlog";
+import Navbar from "../src/components/layout/Navbar";
+import Footer from "../src/components/layout/Footer";
+
+import Dashboard from "./components/pages/Dashboard";
 import Register from "./components/pages/Register";
 import Login from "./components/pages/Login";
-import Blogs from "./components/pages/Blogs";
-import SingleBlog from "./components/pages/SingleBlog";
 import AllAuthors from "./components/pages/AllAuthors";
-import About from "./components/pages/About";
-import DashBoard from "./components/pages/DashBoard";
-import UpdateBlog from "./components/pages/UpdateBlog";
-import Navbar from "./components/layout/Navbar";
-import { Flip, ToastContainer, Zoom } from "react-toastify";
 import { Context } from "./main";
-import { useContext } from "react";
+import axios from "axios";
+import UpdateBlog from "./components/pages/UpdateBlog";
 
 const App = () => {
-  const { mode } = useContext(Context);
+  const { setUser, isAuthenticated, setIsAuthenticated, user, setBlogs,nullUser } =
+    useContext(Context);
+   
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const { data } = await axios.get(
+          "http://localhost:8000/api/v1/user/myProfile",
+          {
+            withCredentials: true,
+          }
+        );
+        setUser(data.user);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.log(error);
+        setIsAuthenticated(false);
+        setUser(nullUser);
+      }
+    };
+    const fetchBlogs = async () => {
+      try {
+        const { data } = await axios.get(
+          "http://localhost:8000/api/v1/blog/all",
+          { withCredentials: true }
+        );
+        setBlogs(data.allBlogs);
+      } catch (error) {
+        setBlogs([]);
+      }
+    };
+    
+    fetchUser();
+    fetchBlogs();
+   
+  }, [isAuthenticated,user]);
   return (
     <>
-     <ToastContainer
-          position="bottom-center"
-          autoClose={3000}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme={mode}
-          transition:Zoom
-        />
-      <Router>
+      <BrowserRouter>
         <Navbar />
-       
         <Routes>
-          <Route element={<Home></Home>} path="/" />
-          <Route element={<Register></Register>} path="/register" />
-          <Route element={<Login></Login>} path="/login" />
-          <Route element={<Blogs></Blogs>} path="/blogs" />
-          <Route element={<SingleBlog></SingleBlog>} path="/blogs/:id" />
-          <Route element={<AllAuthors></AllAuthors>} path="/authors" />
-          <Route element={<About></About>} path="/about" />
-          <Route element={<DashBoard></DashBoard>} path="/dashboard" />
-          <Route element={<UpdateBlog></UpdateBlog>} path="/blog/update/:id" />
+          <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blog/:id" element={<SingleBlog />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/authors" element={<AllAuthors />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/blog/update/:id" element={<UpdateBlog />} />
         </Routes>
-      </Router>
+        <Footer />
+       
+      </BrowserRouter>
     </>
   );
 };
