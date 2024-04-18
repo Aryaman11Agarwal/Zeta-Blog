@@ -10,6 +10,7 @@ const AppWrapper = () => {
   const [user, setUser] = useState({});
   const [blogs, setBlogs] = useState([]);
   const [mode, setMode] = useState("dark");
+  const [nullUser,setnullUSer]=useState({});
 
   return (
     <Context.Provider
@@ -22,6 +23,7 @@ const AppWrapper = () => {
         setMode,
         isAuthenticated,
         setIsAuthenticated,
+        nullUser
       }}
     >
       <App />
@@ -30,8 +32,8 @@ const AppWrapper = () => {
 };
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+
     <AppWrapper />
     
-  </React.StrictMode>
+
 );
