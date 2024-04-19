@@ -8,7 +8,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
-  const { mode, isAuthenticated,setUser } = useContext(Context);
+  const { mode, isAuthenticated,setUser ,setIsAuthenticated} = useContext(Context);
   const navigateTo = useNavigate();
 
   const handleLogin = async (e) => {
@@ -27,11 +27,11 @@ const Login = () => {
         setEmail("");
         setPassword("");
         setRole("");
-        setUser(res.user);
+       setIsAuthenticated(true);
         navigateTo("/");
       })
       .catch((error) => {
-       
+         setIsAuthenticated(false);
         toast.error(error.response.data.message);
       });
   };
