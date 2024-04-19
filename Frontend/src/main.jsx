@@ -10,7 +10,7 @@ const AppWrapper = () => {
   const [user, setUser] = useState({});
   const [blogs, setBlogs] = useState([]);
   const [mode, setMode] = useState("dark");
-  const [nullUser,setnullUSer]=useState({});
+  const [nullUser,setnullUser]=useState({});
 
   return (
     <Context.Provider
@@ -23,7 +23,8 @@ const AppWrapper = () => {
         setMode,
         isAuthenticated,
         setIsAuthenticated,
-        nullUser
+        nullUser,
+        setnullUser
       }}
     >
       <App />
