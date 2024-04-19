@@ -15,11 +15,20 @@ import AllAuthors from "./components/pages/AllAuthors";
 import { Context } from "./main";
 import axios from "axios";
 import UpdateBlog from "./components/pages/UpdateBlog";
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
-  const { setUser, isAuthenticated, setIsAuthenticated, user, setBlogs,nullUser } =
-    useContext(Context);
-   
+  const {
+    setUser,
+    isAuthenticated,
+    setIsAuthenticated,
+    user,
+    setBlogs,
+    nullUser,
+    setnullUser,
+    mode
+  } = useContext(Context);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -29,7 +38,8 @@ const App = () => {
             withCredentials: true,
           }
         );
-        setUser(data.user);
+        setnullUser(data.user)
+        setUser(nullUser);
         setIsAuthenticated(true);
       } catch (error) {
         console.log(error);
@@ -48,14 +58,25 @@ const App = () => {
         setBlogs([]);
       }
     };
-    
-    fetchUser();
     fetchBlogs();
-   
-  }, [isAuthenticated,user]);
+    fetchUser();
+  }, [isAuthenticated]);
   return (
     <>
+       <ToastContainer
+          position="bottom-center"
+          autoClose={500}
+          hideProgressBar
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme={mode}
+        />
       <BrowserRouter>
+       
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -69,7 +90,6 @@ const App = () => {
           <Route path="/blog/update/:id" element={<UpdateBlog />} />
         </Routes>
         <Footer />
-       
       </BrowserRouter>
     </>
   );
