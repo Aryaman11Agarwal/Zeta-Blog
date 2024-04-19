@@ -26,7 +26,10 @@ const App = () => {
     setBlogs,
     nullUser,
     setnullUser,
-    mode
+    mode,
+    setTogleBlog ,
+    togleBlog
+   
   } = useContext(Context);
 
   useEffect(() => {
@@ -60,7 +63,7 @@ const App = () => {
     };
     fetchBlogs();
     fetchUser();
-  }, [isAuthenticated]);
+  }, [isAuthenticated,togleBlog]);
   return (
     <>
        <ToastContainer
