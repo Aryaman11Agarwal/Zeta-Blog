@@ -39,10 +39,12 @@ const blogPost = catchAsyncError(async (req, res, next) => {
   const createdBy = req.user._id;
   const authorName = req.user.name;
   const authorAvatar = req.user.avatar.url;
-
+  
   if (!title || !intro || !category) {
-    return next("Title,category and intro are required fields", 400);
+    return next(new ErrorHandler("Title,category and intro are required fields", 400));
   }
+  console.log("heeloo;");
+
 
   const uploadPromises = [
     cloudinary.uploader.upload(mainImage.tempFilePath),
