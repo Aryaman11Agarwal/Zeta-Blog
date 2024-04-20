@@ -77,7 +77,7 @@ const register = catchAysncError(async (req, res, next) => {
 const login = catchAysncError(async (req, res, next) => {
   const { email, password, role } = req.body;
   if (!email || !password || !role) {
-    return next("Please fill full details");
+    return next(new ErrorHandler("please fill full details", 400));
   }
   const user = await userModel.findOne({ email }).select("+password");
   if (!user) {
