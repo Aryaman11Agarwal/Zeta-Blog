@@ -8,7 +8,7 @@ router.post('/post',isAuthenticated,isAuthorized("Author"),blogPost);
 router.delete('/delete/:id',isAuthenticated,isAuthorized("Author"),deletePost)
 router.get('/all',getAllBlogs)
 router.get('/singleblog/:id',isAuthenticated,getSingleBlog)
-router.get('/myBlogs',isAuthenticated,isAuthorized("Author"),getMyBlogs)
+router.get('/myblogs',isAuthenticated,isAuthorized("Author"),getMyBlogs)
 router.put('/update/:id',isAuthenticated,isAuthorized("Author"),updateBlog)
 
 module.exports=router
