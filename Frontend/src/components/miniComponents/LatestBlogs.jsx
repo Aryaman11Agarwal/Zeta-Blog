@@ -2,9 +2,9 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../../main";
 
-const LatestBlogs = ({ heading, newClass }) => {
+const LatestBlogs = ({ heading, newClass,blogs }) => {
 
-const {blogs}=useContext(Context);
+
   return (
     <section
       className={
