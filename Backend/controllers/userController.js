@@ -59,6 +59,7 @@ const register = catchAysncError(async (req, res, next) => {
       const options = {
         maxAge: process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
         httpOnly: true,
+        
       };
 
       res.status(200).cookie("token", token, options).send({
