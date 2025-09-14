@@ -59,6 +59,8 @@ const register = catchAysncError(async (req, res, next) => {
       const options = {
         maxAge: process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
         httpOnly: true,
+        secure:true,
+        sameSite:"None"
         
       };
 
@@ -100,6 +102,8 @@ const login = catchAysncError(async (req, res, next) => {
       const options = {
         maxAge: process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
         httpOnly: true,
+         secure:true,
+        sameSite:"None"
       };
 
       res.status(200).cookie("token", token, options).send({
@@ -121,6 +125,8 @@ const logout = catchAysncError((req, res, next) => {
     .cookie("token", "", {
       expires: new Date(Date.now()),
       httpOnly: true,
+       secure:true,
+        sameSite:"None"
     })
     .json({
       success: true,
